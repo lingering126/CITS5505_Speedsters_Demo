@@ -1,0 +1,191 @@
+{% extends "base.html" %} {% block title %}Forum Page{% endblock %} {% block
+content %}
+<div class="container mt-3">
+  <!-- Post Title -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h4 class="card-title">Tittle: {{ post.title }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- Post Body and Comments -->
+    <div class="col-md-12">
+      <div class="card mb-3">
+        <div class="row no-gutters">
+          <!-- User Information on the left -->
+          <div class="col-md-3" style="border-right: 1.5px solid #eee9e9d5">
+            <img
+              src="{{ post.user.profile_image_url }}"
+              alt="Profile Image"
+              class="img-fluid rounded-circle m-3 mx-auto d-block"
+              style="height: 100px; width: 100px"
+            >
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">
+                {{ post.user.username }}
+              </h5>
+              <p class="card-text">
+                <small class="text-muted"></small>
+              </p>
+            </div>
+          </div>
+          <!-- Content on the right -->
+          <div class="col-md-9">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <div class="d-flex align-items-center">
+                  <img
+                    src="{{ url_for('static', filename='icon/icons8-thumbs-up-24.png') }}"
+                    alt="Like"
+                    class="icon-like"
+                    data-id="{{ post.id }}"
+                    data-type="post"
+                  >
+                  <span class="like-count mx-2" id="like-count-{{ post.id }}"
+                    >{{ post.likes }}</span
+                  >
+                  <img
+                    src="{{ url_for('static', filename='icon/icons8-thumbs-down-24.png') }}"
+                    alt="Dislike"
+                    class="icon-dislike"
+                    data-id="{{ post.id }}"
+                    data-type="post"
+                  >
+                </div>
+                <span class="text-muted"
+                  >{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span
+                >
+              </div>
+              <div class="post-content">{{ post.content|safe }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Comments -->
+      {% for reply in replies.items %}
+      <div class="card mb-3">
+        <div class="row no-gutters">
+          <!-- User Information on the left -->
+          <div class="col-md-3" style="border-right: 1.5px solid #eee9e9d5">
+            <img
+              src="{{ reply.user.profile_image_url }}"
+              alt="Profile Image"
+              class="img-fluid rounded-circle m-3 mx-auto d-block"
+              style="height: 100px; width: 100px"
+            >
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">
+                {{ reply.user.username }}
+              </h5>
+              <p class="card-text">
+                <small class="text-muted"></small>
+              </p>
+            </div>
+          </div>
+          <!-- Content on the right -->
+          <div class="col-md-9">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <div class="d-flex align-items-center">
+                  <img
+                    src="{{ url_for('static', filename='icon/icons8-thumbs-up-24.png') }}"
+                    alt="Like"
+                    class="icon-like"
+                    data-id="{{ reply.id }}"
+                    data-type="reply"
+                  >
+                  <span class="like-count mx-2" id="like-count-{{ reply.id }}"
+                    >{{ reply.likes }}</span
+                  >
+                  <img
+                    src="{{ url_for('static', filename='icon/icons8-thumbs-down-24.png') }}"
+                    alt="Dislike"
+                    class="icon-dislike"
+                    data-id="{{ reply.id }}"
+                    data-type="reply"
+                  >
+                </div>
+                <span class="text-muted"
+                  >{{ reply.created_at.strftime('%Y-%m-%d %H:%M') }}</span
+                >
+              </div>
+              <div class="post-content">{{ reply.content|safe }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <!-- Pagination -->
+  <nav aria-label="Replies page navigation">
+    <ul class="pagination justify-content-center">
+      {% if replies.has_prev %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="{{ url_for('pr.details', post_id=post.id, page=replies.prev_num) }}"
+          aria-label="Previous"
+        >
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% endif %} {% for page_num in replies.iter_pages() %}
+      <li class="page-item {% if page_num == replies.page %}active{% endif %}">
+        <a
+          class="page-link"
+          href="{{ url_for('pr.details', post_id=post.id, page=page_num) }}"
+          >{{ page_num }}</a
+        >
+      </li>
+      {% endfor %} {% if replies.has_next %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="{{ url_for('pr.details', post_id=post.id, page=replies.next_num) }}"
+          aria-label="Next"
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  <!-- Form to submit a new reply -->
+  <form
+    method="POST"
+    action="{{ url_for('pr.submit_reply', post_id=post.id) }}"
+    class="mt-3"
+  >
+    <div class="container mt-3">
+      <label for="replyContent">Add a comment</label>
+      <div class="d-flex flex-column">
+        <textarea
+          name="reply_content"
+          id="replyContent"
+          class="form-control mb-2"
+          required
+          rows="3"
+        ></textarea>
+        <button type="submit" class="btn btn-primary align-self-end">
+          Reply
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<!--import CDN js-->
+{% endblock %} {% block scripts %}
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+<script>
+  CKEDITOR.replace("replyContent");
+</script>
+{% endblock %}

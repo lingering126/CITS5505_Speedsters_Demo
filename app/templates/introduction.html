@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <title>{% block title %}Introduction{% endblock %}</title>
+    <!--import bootstrap & google fonts-->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    >
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/posts.css') }}"
+    >
+    <style>
+      body {
+        font-weight: 600;
+      }
+      .welcome-section {
+        position: relative;
+        background-image: url("{{ url_for('static', filename='images/background.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        color: white;
+        text-align: center;
+        padding: 10vh 0;
+      }
+      .welcome-text {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 2vh;
+      }
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 2rem 0;
+      }
+      .feature {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: left;
+        max-width: 45%;
+        color: white;
+      }
+      .feature h3 {
+        font-size: 1.5rem;
+      }
+      .next-button {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px 20px;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        margin-top: 2rem;
+        font-size: 2rem;
+        font-family: "Bebas Neue", sans-serif;
+        font-style: italic;
+        display: inline-block;
+        transition: background 0.3s;
+      }
+      .next-button:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      {% block header %}
+      <!-- Navigation Bar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">SpeedSters</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('pr.view_post') }}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('pr.news') }}">News</a>
+            </li>
+            {% if not current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+            </li>
+            {% endif %}
+          </ul>
+          <!-- Search Box within Navbar -->
+          <form
+            class="form-inline my-2 my-lg-0"
+            action="{{ url_for('pr.search') }}"
+            method="get"
+          >
+            <select class="form-control mr-sm-2" name="search_type">
+              <option value="Titles">Titles</option>
+              <option value="Descriptions">Descriptions</option>
+            </select>
+            <input
+              class="form-control mr-sm-2"
+              type="search"
+              name="q"
+              placeholder="Search"
+              aria-label="Search"
+            >
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+              Search
+            </button>
+          </form>
+          <!-- Notification Bell -->
+          <div class="notification-bell-container mx-3">
+            <a href="#" id="notification-bell">
+              {% if new_notifications_count > 0 %}
+              <img
+                src="{{ url_for('static', filename='icon/bell-new.png') }}"
+                alt="New Notifications"
+              />
+              {% else %}
+              <img
+                src="{{ url_for('static', filename='icon/bell-no-new.png') }}"
+                alt="No New Notifications"
+              >
+              {% endif %}
+            </a>
+            <div id="notification-dropdown" class="dropdown-content">
+              <!-- Notifications will be loaded here via JavaScript -->
+            </div>
+          </div>
+          <!-- User profile and settings -->
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdownMenuLink"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {% if current_user.is_authenticated %}
+                <img
+                  src="{{ current_user.profile_image_url }}"
+                  class="rounded-circle"
+                  style="width: 40px; height: 40px"
+                  alt="user_profile"
+                >
+                {% else %}
+                <!-- when user is not logged in -->
+                <img
+                  src="/static/uploads/default_user.jpg"
+                  class="rounded-circle"
+                  style="width: 40px; height: 40px"
+                  alt="default_user_profile"
+                >
+                {% endif %}
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="navbarDropdownMenuLink"
+              >
+                {% if current_user.is_authenticated %}
+                <a
+                  class="dropdown-item"
+                  href="{{ url_for('user.user_profile', user_id=current_user.id) }}"
+                  >User Profile</a
+                >
+                <a
+                  class="dropdown-item"
+                  href="{{ url_for('user.user_settings') }}"
+                  >Settings</a
+                >
+                <a
+                  class="dropdown-item"
+                  href="{{ url_for('notifications.notifications') }}"
+                  >Notifications</a
+                >
+                <a class="dropdown-item" href="{{ url_for('auth.logout') }}"
+                  >Logout</a
+                >
+                {% else %}
+                <!-- when the user doesn't log in, it will redirect to the login page -->
+                <a class="dropdown-item" href="{{ url_for('auth.login') }}"
+                  >User Profile</a
+                >
+                <a class="dropdown-item" href="{{ url_for('auth.login') }}"
+                  >Settings</a
+                >
+                <a class="dropdown-item" href="{{ url_for('auth.login') }}"
+                  >Login</a
+                >
+                {% endif %}
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      {% endblock %}
+    </header>
+    <div class="welcome-section">
+      <div class="welcome-text">
+        <h1>Welcome to SpeedSters, a World of Fancy Cars</h1>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <h3>OUR PURPOSE</h3>
+          <p>
+            Create a place to share wonderful cars with car lovers,feeling
+            freely to discuss
+          </p>
+        </div>
+        <div class="feature">
+          <h3>CONTENTS</h3>
+          <p>
+            Everything about cars, including news, tutorials, enquiries, events, discussions,sales, etc. You
+            can ask questions to other car lovers, or our ✨SpeedSter AI is always here for you!
+          </p>
+        </div>
+        <div class="feature">
+          <h3>EVENTS</h3>
+          <p>
+            Take your event hosting to the next level! Know which cars are
+            coming, and stay coordinated with our automated event chat. Maintain
+            exclusivity with secret codes and attendance request features.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>COMMUNITY</h3>
+          <p>
+            Connect with fellow car enthusiasts, explore car modifying tutorials, stay updated with the latest car news, and freely share your ideas. Fuel your passion in our vibrant community!
+          </p>
+        </div>
+      </div>
+      <a href="{{ url_for('pr.view_post') }}" class="next-button">NEXT</a>
+    </div>
+<!--import JQuery & bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

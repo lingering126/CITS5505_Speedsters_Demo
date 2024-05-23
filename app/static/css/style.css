@@ -1,0 +1,178 @@
+@font-face {
+    font-family: "ColfaxAI";
+    src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff2)
+        format("woff2"),
+      url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff) format("woff");
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "ColfaxAI";
+    src: url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff2) format("woff2"),
+      url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff) format("woff");
+    font-weight: bold;
+    font-style: normal;
+  }
+  body,
+  input {
+    font-size: 16px;
+    line-height: 24px;
+    color: #353740;
+    font-family: "ColfaxAI", Helvetica, sans-serif;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+  }
+  .icon {
+    width: 34px;
+  }
+  h3 {
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: bold;
+    color: #202123;
+    margin: 16px 0 40px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+  }
+  input[type="text"] {
+    padding: 12px 16px;
+    border: 1px solid #10a37f;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  ::placeholder {
+    color: #8e8ea0;
+    opacity: 1;
+  }
+  input[type="submit"] {
+    padding: 12px 0;
+    color: #fff;
+    background-color: #10a37f;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .result {
+    font-weight: bold;
+    margin-top: 40px;
+  }
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 10px;
+    padding-top: 20px;
+    
+}
+#chat-box {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-end;
+    width:100%;
+}
+.chat-message {
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+.user-message {
+    align-self: flex-end;
+    background-color: #d1e7dd;
+    white-space: pre-line;
+}
+.bot-message {
+    align-self: flex-start;
+    background-color: #feeded;
+    white-space: pre-line; /* Preserve line breaks */
+}
+.chat-input {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    width: 100%;
+    
+}
+.chat-input input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: horizontal; /* Allow horizontal resizing */
+    overflow-y: auto; /* Enable vertical scrolling */
+    
+}
+
+
+textarea {
+  font-size: 16px;
+  line-height: 24px;
+  color: #353740;
+  font-family: "ColfaxAI", Helvetica, sans-serif;
+}
+
+textarea {
+  padding: 12px 16px;
+  border: 1px solid #10a37f;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  resize: none; /* Prevent manual resizing */
+  overflow-y: hidden; /* Hide vertical scrollbar initially */
+
+}
+
+/* Adjust the height of the textarea dynamically */
+textarea:focus {
+  height: auto;
+}
+
+/* Ensure the textarea grows to fit content */
+textarea {
+  min-height: 50px; /* Minimum height */
+  max-height: 200px; /* Maximum height */
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+}
+
+.chat-input input[type="submit"] {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #10a37f;
+  color: #fff;
+  margin-left: auto; /* Move the submit button to the right */
+}
+
+@media (max-width: 768px) {
+  .chat-container {
+      width: 100%;
+      padding: 10px;
+  }
+  #chat-box {
+      width: 100%;
+      padding: 10px;
+  }
+}
+@media (max-width: 480px) {
+  .chat-container {
+      width: 100%;
+      padding: 5px;
+  }
+  #chat-box {
+      width: 100%;
+      padding: 5px;
+  }
+}

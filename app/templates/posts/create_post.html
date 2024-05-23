@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block title %}Create a Post{% endblock %} {% block
+content %}
+<div class="container mt-3">
+  <div class="mt-4">
+    <div class="container">
+      <form method="POST" action="create-post">
+        <!-- Ensure action attribute is non-empty -->
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+          <div class="col-md-8 mb-3">
+            <label for="title">Title</label>
+            {{ form.title(class="form-control", size=90) }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category" required>
+              <option value="" disabled selected>Select a category</option>
+              <option value="news">News</option>
+              <option value="tutorial">Tutorial</option>
+              <option value="discussion">Discussion</option>
+              <option value="trade">Trade</option>
+              <option value="question">Question</option>
+              <option value="announcement">Announcement</option>
+              <option value="event">Event</option>
+              <option value="poll">Poll</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="content">Content</label>
+          {{ form.content(class="form-control", cols=32, rows=5) }}
+        </div>
+        <div>{{ form.submit(class="btn btn-primary") }}</div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+<script>
+  CKEDITOR.replace("content");
+</script>
+{% endblock %}

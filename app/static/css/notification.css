@@ -1,0 +1,180 @@
+/*******notification*/
+/* static/styles.css */
+.notification-bell-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  right: 0;
+  top: 50px; /* Adjust based on your navbar height */
+}
+
+.dropdown-content .notification-item {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content .notification-item:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.notification-item {
+  cursor: pointer;
+}
+
+.notification-timestamp {
+  font-size: 0.8em;
+  color: #666;
+}
+
+/*******notification*/
+
+.notifications-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.notification-user-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.notification-user-name {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.notification-message {
+  flex-grow: 1;
+}
+
+.notification-timestamp {
+  color: #666;
+  margin-left: 10px;
+}
+
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.mark-as-read,
+.delete-notification {
+  margin-left: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.mark-as-read:hover,
+.delete-notification:hover {
+  text-decoration: underline;
+}
+
+.notifications-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.notification-user-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.notification-user-name {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.notification-message {
+  flex-grow: 1;
+}
+
+.notification-timestamp {
+  color: #666;
+  margin-left: 10px;
+}
+
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.mark-as-read,
+.delete-notification,
+.view-post {
+  margin-left: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.mark-as-read:hover,
+.delete-notification:hover,
+.view-post:hover {
+  text-decoration: underline;
+}
+
+.icon-like,
+.icon-dislike {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+}
+
+.icon-like:hover,
+.icon-dislike:hover {
+  opacity: 0.7;
+}
+
+.like-count {
+  font-size: 1rem;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.post-content img {
+  max-width: 50%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  max-height: 300px; /* Adjust this value to set the maximum height */
+  width: auto; /* Ensures the width adjusts according to the aspect ratio */
+}

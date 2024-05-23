@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block content %}
+<!-- <h2>Notifications</h2> -->
+
+{% if notifications %}
+<ul class="notifications-list">
+  {% for notification in notifications %}
+  <li class="notification-item">
+    <img
+      src="{{ notification.actor_image }}"
+      alt="{{ notification.actor_name }}"
+      class="notification-user-image"
+    >
+    <span class="notification-user-name">{{ notification.actor_name }}</span>
+    {% if notification.notification_type == 'mention' %}
+    <span class="notification-message"
+      >mentioned you in: {{ notification.message }}</span
+    >
+    {% elif notification.notification_type == 'new_reply' %}
+    <span class="notification-message"
+      >replied to you: {{ notification.message }}</span
+    >
+    {% endif %}
+    <span class="notification-timestamp"
+      >{{ notification.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span
+    >
+    {% if not notification.is_read %}
+    <span class="notification-status unread-dot"></span>
+    {% endif %}
+    <a
+      href="{{ url_for('notifications.mark_as_read', notification_id=notification.id) }}"
+      class="mark-as-read"
+      >Mark as read</a
+    >
+    <a
+      href="{{ url_for('notifications.delete_notification', notification_id=notification.id) }}"
+      class="delete-notification"
+      onclick="return confirm('Are you sure you want to delete this notification?');"
+      >Delete</a
+    >
+    <a
+      href="{{ url_for('pr.details', post_id=notification.post_id) }}"
+      class="view-post"
+      >View Post</a
+    >
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>You have no new notifications.</p>
+{% endif %} {% endblock %}

@@ -1,0 +1,238 @@
+{% extends "base.html" %} {% block title %}User Profile{% endblock %} {% block
+styles %}
+<style>
+  .reply_content {
+    font-size: 20px;
+  }
+  .reply-link {
+    color: black;
+    text-decoration: none;
+  }
+  .reply-link:hover {
+    color: black;
+    text-decoration: underline;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left Column for User Profile Information -->
+    <div class="col-md-3">
+      <img
+        src="{{ user.profile_image_url }}"
+        class="img-fluid rounded-circle"
+        alt="User Profile Picture"
+        style="width: 150px; height: 150px"
+      >
+      <div style="margin-left: 5px">
+        <h3 class="mt-2 ml-4">{{ user.username }}</h3>
+      </div>
+    </div>
+
+    <!-- Right Column for Tabs and Content -->
+    <div class="col-md-9">
+      <!-- Tabs for Post and Reply History -->
+      <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.args.get('tab') != 'replies' %}active{% endif %}"
+            id="posts-tab"
+            data-toggle="tab"
+            href="#v-pills-posts"
+            role="tab"
+            aria-controls="v-pills-posts"
+            aria-selected="true"
+            >Post History</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.args.get('tab') == 'replies' %}active{% endif %}"
+            id="replies-tab"
+            data-toggle="tab"
+            href="#v-pills-replies"
+            role="tab"
+            aria-controls="v-pills-replies"
+            aria-selected="false"
+            >Reply History</a
+          >
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="profileTabsContent" style="margin-top: 20px">
+        <div
+          class="tab-pane fade {% if request.args.get('tab') != 'replies' %}show active{% endif %}"
+          id="v-pills-posts"
+          role="tabpanel"
+          aria-labelledby="posts-tab"
+        >
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 10%">Tag</th>
+                <th scope="col" style="width: 50%">Subjects</th>
+                <th scope="col" style="width: 20%">Replies/Views</th>
+                <th scope="col" style="width: 20%">Last Reply</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for post in posts.items %}
+              <tr>
+                <td>{{ post.category.capitalize() }}</td>
+                <td>
+                  <a
+                    href="{{ url_for('pr.details', post_id=post.id) }}"
+                    class="custom-link"
+                    >{{ post.title }}</a
+                  ><br >
+                  <small
+                    >Started by
+                    <b><a href="#">{{ post.user.username }}</a></b>
+                    <span
+                      >{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span
+                    ></small
+                  >
+                </td>
+                <td>
+                  {{ post.replies_count }} replies <br >
+                  {{ post.views }} views
+                </td>
+                <td>
+                  Last replied at: <b>{{ post.last_replier_username }}</b><br >
+                  <small
+                    >{{ post.get_last_reply_date().strftime('%Y-%m-%d %H:%M')
+                    }}</small
+                  >
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <!-- Pagination for posts -->
+          <nav aria-label="Posts page navigation">
+            <ul class="pagination justify-content-center">
+              {% if posts.has_prev %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="{{ url_for('user.user_profile', user_id=user.id, post_page=posts.prev_num) }}"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              {% endif %} {% for page_num in posts.iter_pages() %}
+              <li
+                class="page-item {% if page_num == posts.page %}active{% endif %}"
+              >
+                <a
+                  class="page-link"
+                  href="{{ url_for('user.user_profile', user_id=user.id, post_page=page_num) }}"
+                  >{{ page_num }}</a
+                >
+              </li>
+              {% endfor %} {% if posts.has_next %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="{{ url_for('user.user_profile', user_id=user.id, post_page=posts.next_num) }}"
+                  aria-label="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% if not posts.items %}
+          <p>No posts found.</p>
+          {% endif %}
+        </div>
+        <!-- this is very important, to keep the tab active -->
+        <div
+          class="tab-pane fade {% if request.args.get('tab') == 'replies' %}show active{% endif %}"
+          id="v-pills-replies"
+          role="tabpanel"
+          aria-labelledby="replies-tab"
+        >
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 10%">Tag</th>
+                <th scope="col" style="width: 40%">Subjects</th>
+                <th scope="col" style="width: 20%">Replied at</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for reply in replies.items %}
+              <tr>
+                <td>{{ reply.post.category.capitalize() }}</td>
+                <td>
+                  <div class="reply_content">
+                    <a
+                      >{{ reply.content | strip_html | truncate_words(10)}}..</a
+                    >
+                  </div>
+                  <div class="reply_post_title">
+                    <a href="{{ url_for('pr.details', post_id=reply.post.id) }}"
+                      >{{ reply.post.title }}</a
+                    >
+                  </div>
+                </td>
+                <td>{{ reply.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <!-- Pagination for replies -->
+          <nav aria-label="Replies page navigation">
+            <ul class="pagination justify-content-center">
+              {% if replies.has_prev %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="{{ url_for('user.user_profile', user_id=user.id, reply_page=replies.prev_num, tab='replies') }}"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              {% endif %} {% for page_num in replies.iter_pages() %}
+              <li
+                class="page-item {% if page_num == replies.page %}active{% endif %}"
+              >
+                <a
+                  class="page-link"
+                  href="{{ url_for('user.user_profile', user_id=user.id, reply_page=page_num, tab='replies') }}"
+                  >{{ page_num }}</a
+                >
+              </li>
+              {% endfor %} {% if replies.has_next %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="{{ url_for('user.user_profile', user_id=user.id, reply_page=replies.next_num, tab='replies') }}"
+                  aria-label="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% if not replies.items %}
+          <p>No replies found.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<!--import JQuery & bootstrap & cdnjs cloudflare-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

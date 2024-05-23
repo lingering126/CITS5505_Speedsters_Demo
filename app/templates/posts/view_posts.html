@@ -1,0 +1,160 @@
+{% extends "base.html" %} {% block title %}View Posts{% endblock %} {% block
+content %}
+<div class="container mt-3">
+  <div class="row mb-3">
+    <div class="col-12 text-right">
+      <!-- Create post button -->
+      <a href="{{ url_for('pr.create_post') }}" class="btn btn-primary mb-3"
+        >Create Post</a
+      >
+      <a href="{{ url_for('pr.chat') }}" class="btn btn-primary mb-3"
+        >✨Speedster AI</a
+      >
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-12">
+      <!-- Display posts in a table -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 10%">
+              <div class="dropdown">
+                <a
+                  class="dropdown-toggle"
+                  href="#"
+                  role="button"
+                  id="tagFilter"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Tag
+                </a>
+                <div class="dropdown-menu" aria-labelledby="tagFilter">
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='') }}"
+                    >All</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='news') }}"
+                    >News</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='tutorial') }}"
+                    >Tutorial</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='discussion') }}"
+                    >Discussion</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='trade') }}"
+                    >Trade</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='question') }}"
+                    >Question</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='announcement') }}"
+                    >Announcement</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='event') }}"
+                    >Event</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{{ url_for('pr.view_post', tag='poll') }}"
+                    >Poll</a
+                  >
+                </div>
+              </div>
+            </th>
+            <th scope="col" style="width: 50%">Subjects</th>
+            <th scope="col" style="width: 20%">Replies/Views</th>
+            <th scope="col" style="width: 20%">Last Reply</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in posts.items %}
+          <tr>
+            <td>{{ post.category.capitalize() }}</td>
+            <td>
+              <a
+                href="{{ url_for('pr.details', post_id=post.id) }}"
+                class="custom-link"
+                >{{ post.title }}</a
+              >
+              <br >
+              <small>
+                Started by
+                <b><a href="#">{{ post.user.username }}</a></b>
+                <span>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+              </small>
+            </td>
+            <td>
+              {{ post.replies_count }} replies <br >
+              {{ post.views }} views
+            </td>
+            <td>
+              Last replied:
+              <b>{{ post.last_replier_username }}</b>
+              {% if post.last_reply_date %}
+              <br><small
+                >{{ post.last_reply_date.strftime('%Y-%m-%d %H:%M') }}</small
+              >
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav aria-label="Forum page navigation">
+    <ul class="pagination justify-content-center">
+      {% if posts.has_prev %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="{{ url_for('pr.view_post', page=posts.prev_num, tag=request.args.get('tag')) }}"
+          aria-label="Previous"
+        >
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% endif %} {% for page_num in posts.iter_pages() %}
+      <li class="page-item {% if page_num == posts.page %}active{% endif %}">
+        <a
+          class="page-link"
+          href="{{ url_for('pr.view_post', page=page_num, tag=request.args.get('tag')) }}"
+          >{{ page_num }}</a
+        >
+      </li>
+      {% endfor %} {% if posts.has_next %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="{{ url_for('pr.view_post', page=posts.next_num, tag=request.args.get('tag')) }}"
+          aria-label="Next"
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+<!-- Inherit from base.html template -->
+<!-- Define the title -->
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<h3>Search Results for "{{ query | trim('%') }}"</h3>
+<!-- Display the search query -->
+{% if results.items %}
+<div class="row">
+  <div class="col-12">
+    <!-- Create a table to display search results -->
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 10%">Tag</th>
+          <th scope="col" style="width: 50%">Subjects</th>
+          <th scope="col" style="width: 20%">Replies/Views</th>
+          <th scope="col" style="width: 20%">Last Reply</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for post in results.items %}
+        <tr>
+          <td>{{ post.category | default('Uncategorized') | capitalize }}</td>
+          <td>
+            <a href="{{ url_for('pr.details', post_id=post.id) }}" class="custom-link">{{ post.title }}</a><br><!-- Post title link -->
+            <small>
+              Started by <b><a href="#">{{ post.user.username | default('Unknown User') }}</a></b>
+              <span>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </small><!-- Post author and creation time -->
+          </td>
+          <td>
+            {{ post.replies_count }} replies <br >
+            {{ post.views }} views
+          </td>
+          <td>
+            Last replied by: <b>{{ post.last_replier_username | default('No replies') | capitalize }}</b><br>
+            {% if post.last_reply_date %}
+            <small>{{ post.last_reply_date.strftime('%Y-%m-%d %H:%M') }}</small>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Search page navigation">
+  <ul class="pagination justify-content-center">
+    {% if results.has_prev %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('pr.search', q=query | trim('%'), search_type=search_type, page=results.prev_num) }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% endif %}
+    {% for page_num in results.iter_pages() %}
+    <li class="page-item {% if page_num == results.page %}active{% endif %}">
+      <a class="page-link" href="{{ url_for('pr.search', q=query | trim('%'), search_type=search_type, page=page_num) }}">{{ page_num }}</a>
+    </li>
+    {% endfor %}
+    {% if results.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('pr.search', q=query | trim('%'), search_type=search_type, page=results.next_num) }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% else %}
+<p>No results found.</p>
+{% endif %}
+{% endblock %}
